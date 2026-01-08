@@ -2,10 +2,12 @@ import React from 'react'
 import ClientDashboard from './client'
 import { fetchPosts } from './action'
 import { ContentListResponse } from '@/src/api-client'
+import { auth } from '@/lib/auth'
 async function page() {
-  const posts:ContentListResponse = await fetchPosts({page:1,limit:3})
+  const session = await auth()
+   if (session?.access_token) return <ClientDashboard session={session}/>
   return (
-    <ClientDashboard posts={posts}/>
+    <div>hii</div>
   )
   
 }

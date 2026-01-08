@@ -1,0 +1,13 @@
+[2026-01-08T13:39:48.346Z] Error: Error opening file "F:\personal projects\creatorcopilot-client\content_openapi.json" 
+ENOENT: no such file or directory, open 'F:\personal projects\creatorcopilot-client\content_openapi.json'
+Stack:
+ResolverError: Error opening file "F:\personal projects\creatorcopilot-client\content_openapi.json" 
+ENOENT: no such file or directory, open 'F:\personal projects\creatorcopilot-client\content_openapi.json'
+    at Object.handler (F:\personal projects\creatorcopilot-client\node_modules\@hey-api\json-schema-ref-parser\dist\lib\resolvers\file.js:58:19)
+    at async $RefParser.parse (F:\personal projects\creatorcopilot-client\node_modules\@hey-api\json-schema-ref-parser\dist\lib\index.js:225:17)
+    at async $RefParser.bundle (F:\personal projects\creatorcopilot-client\node_modules\@hey-api\json-schema-ref-parser\dist\lib\index.js:132:9)
+    at async O (file:///F:/personal%20projects/creatorcopilot-client/node_modules/@hey-api/openapi-ts/dist/src-DxXY6pL5.mjs:2:6953)
+    at async file:///F:/personal%20projects/creatorcopilot-client/node_modules/@hey-api/openapi-ts/dist/src-DxXY6pL5.mjs:11:2575
+    at async Promise.all (index 0)
+    at async R (file:///F:/personal%20projects/creatorcopilot-client/node_modules/@hey-api/openapi-ts/dist/src-DxXY6pL5.mjs:11:2522)
+    at async file:///F:/personal%20projects/creatorcopilot-client/node_modules/@hey-api/openapi-ts/dist/run.mjs:4:1634

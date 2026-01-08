@@ -17,14 +17,14 @@ export default async function NotFound() {
         </div>
         <div className="space-y-2">
           <h1 className="text-4xl font-bold">404</h1>
-          <h2 className="text-xl font-semibold">Post Not Found</h2>
+          <h2 className="text-xl font-semibold">Page Not Found</h2>
           <p className="text-sm text-muted-foreground max-w-md">
-            The post you&apos;re looking for doesn&apos;t exist or may have been deleted.
+            The page you&apos;re looking for doesn&apos;t exist or may have been removed.
           </p>
         </div>
         <Button asChild>
           <Link href={isLoggedIn ? "/history" : "/"}>
-            {isLoggedIn ? "Back to History" : "Back to Home"}
+            {isLoggedIn ? "Back to Dashboard" : "Back to Home"}
           </Link>
         </Button>
       </div>

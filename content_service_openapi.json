@@ -254,7 +254,9 @@
           }
         },
         "type": "object",
-        "required": ["content"],
+        "required": [
+          "content"
+        ],
         "title": "ContentDetailResponse"
       },
       "ContentDetailSchema": {
@@ -277,6 +279,11 @@
             "format": "date-time",
             "title": "Created At"
           },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
           "platforms": {
             "anyOf": [
               {
@@ -290,6 +297,14 @@
               }
             ],
             "title": "Platforms",
+            "default": []
+          },
+          "jobs": {
+            "items": {
+              "$ref": "#/components/schemas/JobResponseSchema"
+            },
+            "type": "array",
+            "title": "Jobs",
             "default": []
           },
           "content": {
@@ -344,11 +359,6 @@
             ],
             "title": "Keywords",
             "default": []
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "title": "Updated At"
           }
         },
         "type": "object",
@@ -357,13 +367,13 @@
           "title",
           "status",
           "created_at",
+          "updated_at",
           "content",
           "ctaLink",
           "ctaType",
           "language",
           "tone",
-          "audience",
-          "updated_at"
+          "audience"
         ],
         "title": "ContentDetailSchema"
       },
@@ -383,7 +393,11 @@
           }
         },
         "type": "object",
-        "required": ["content_id", "job_id", "status"],
+        "required": [
+          "content_id",
+          "job_id",
+          "status"
+        ],
         "title": "ContentGenerateResponse"
       },
       "ContentGenerationRequest": {
@@ -402,8 +416,7 @@
           },
           "language": {
             "type": "string",
-            "title": "Language",
-            "default": "en"
+            "title": "Language"
           },
           "ctaType": {
             "type": "string",
@@ -466,7 +479,17 @@
           }
         },
         "type": "object",
-        "required": ["title", "content", "ctaType", "version", "job_type"],
+        "required": [
+          "title",
+          "content",
+          "language",
+          "tone",
+          "audience",
+          "content_goal",
+          "version",
+          "platforms",
+          "job_type"
+        ],
         "title": "ContentGenerationRequest"
       },
       "ContentListResponse": {
@@ -484,7 +507,10 @@
           }
         },
         "type": "object",
-        "required": ["total", "posts"],
+        "required": [
+          "total",
+          "posts"
+        ],
         "title": "ContentListResponse"
       },
       "ContentSummarySchema": {
@@ -506,10 +532,37 @@
             "type": "string",
             "format": "date-time",
             "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "platforms": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Platforms"
+          },
+          "jobs": {
+            "items": {
+              "$ref": "#/components/schemas/JobResponseSchema"
+            },
+            "type": "array",
+            "title": "Jobs",
+            "default": []
           }
         },
         "type": "object",
-        "required": ["id", "title", "status", "created_at"],
+        "required": [
+          "id",
+          "title",
+          "status",
+          "created_at",
+          "updated_at",
+          "platforms"
+        ],
         "title": "ContentSummarySchema"
       },
       "HTTPValidationError": {
@@ -582,6 +635,64 @@
         ],
         "title": "JobDetailSchema"
       },
+      "JobResponseSchema": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "job_type": {
+            "type": "string",
+            "title": "Job Type"
+          },
+          "progress": {
+            "type": "integer",
+            "title": "Progress"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "retries": {
+            "type": "integer",
+            "title": "Retries"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "job_type",
+          "progress",
+          "status",
+          "retries",
+          "error",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "JobResponseSchema"
+      },
       "ValidationError": {
         "properties": {
           "loc": {
@@ -608,7 +719,11 @@
           }
         },
         "type": "object",
-        "required": ["loc", "msg", "type"],
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
         "title": "ValidationError"
       }
     }

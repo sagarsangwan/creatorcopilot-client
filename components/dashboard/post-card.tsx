@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
-import { platformLabels, statusLabels } from "@/lib/mock-data"
 import { formatRelativeTime } from "@/lib/data-utils"
 import { ExternalLink, Trash2, AlertCircle } from "lucide-react"
 import Link from "next/link"
@@ -21,9 +20,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
-
+import { ContentSummarySchema } from "@/src/api-client"
+import { platformOptions } from "./generate-blog-form"
 interface PostCardProps {
-  post: Post
+  post: ContentSummarySchema
   onDelete?: (id: string) => void
 }
 
@@ -46,45 +46,45 @@ export function PostCard({ post, onDelete }: PostCardProps) {
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-semibold text-base leading-tight line-clamp-2 flex-1">{post.title}</h3>
           <Badge className={statusColors[post.status]} variant="secondary">
-            {statusLabels[post.status]}
+            {post.status}
           </Badge>
         </div>
 
         <div className="flex flex-wrap gap-2">
           {post.platforms.map((platform) => (
             <Badge key={platform} variant="outline" className="text-xs">
-              {platformLabels[platform]}
+              {platformOptions[platform]?.label}
             </Badge>
           ))}
         </div>
-      </CardHeader>
+      </CardHeader> 
 
       <CardContent className="flex-1 space-y-3">
-        {/* Job Progress */}
+        {/* Jobs[0] Progress */}
         {post.status === "processing" && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">Progress</span>
-              <span className="font-medium">{post.job.progress}%</span>
+              <span className="font-medium">{post.jobs[0].progress}%</span>
             </div>
-            <Progress value={post.job.progress} className="h-2" />
+            <Progress value={post.jobs[0].progress} className="h-2" />
           </div>
         )}
 
         {/* Error Message */}
-        {post.status === "failed" && post.job.error && (
+        {post.status === "failed" && post.jobs[0].error && (
           <div className="flex gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
             <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-destructive">{post.job.error}</p>
+            <p className="text-xs text-destructive">{post.jobs[0].error}</p>
           </div>
         )}
 
         {/* Retries Badge */}
-        {post.job.retries > 0 && (
+        {post.jobs[0].retries > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground">Retries:</span>
             <Badge variant="secondary" className="text-xs">
-              {post.job.retries}
+              {post.jobs[0].retries}
             </Badge>
           </div>
         )}
@@ -120,7 +120,7 @@ export function PostCard({ post, onDelete }: PostCardProps) {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Post</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete "{post.title}"? This action cannot be undone.
+                Are you sure you want to delete &quot;{post.title}&quot; ? This action cannot be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

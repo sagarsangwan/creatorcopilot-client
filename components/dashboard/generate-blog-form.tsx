@@ -14,9 +14,8 @@ import { mockUsage, type Platform, type CtaType } from "@/lib/mock-data"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { ContentGenerationRequest } from "@/src/api-client"
+import { ContentGenerateResponse, ContentGenerationRequest, PostsApiV1ContentPostsPostData } from "@/src/api-client"
 
-import { Session } from "@auth/core/types"
 
 
 const toneMapping = [
@@ -47,7 +46,7 @@ const contentGoals = [
 ]
 interface PlatformInfo{id:string, label:string,description:string}
 type PlatformDict = Record<string, PlatformInfo>
-const platformOptions:PlatformDict = 
+export const platformOptions:PlatformDict = 
  { "linkedin":{ id: "linkedin", label: "LinkedIn", description: "Professional network, longer content" },
  "twitter/x": { id: "twitter/x", label: "X (Twitter)", description: "Short, punchy, conversation-driven" },
   "instagram":{ id: "instagram", label: "Instagram", description: "Visual-first, hashtag-optimized" }}
@@ -158,9 +157,13 @@ organize_junk(target)`,
     setLoading(true);
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-      const res = await fetch(`${backendUrl}/posts/`, {
+      const requestData:PostsApiV1ContentPostsPostData={
+        url:"/api/v1/content/posts",
+        body:formData
+      }
+      const res = await fetch(`${backendUrl}${requestData.url}`, {
         method: "POST",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(requestData.body),
       headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -172,7 +175,7 @@ organize_junk(target)`,
         toast.error(errorData.message || "Backend failed to sign upload");
         return;
       }
-      const data = await res.json();
+      const data:ContentGenerateResponse = await res.json();
        toast.success("Content generation started!", {
       description: "Your content is being generated. This may take a few minutes.",
     })

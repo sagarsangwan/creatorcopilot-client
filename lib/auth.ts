@@ -2,32 +2,21 @@ import NextAuth, {type DefaultSession, type NextAuthConfig} from "next-auth";
 import { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 import axios, {AxiosError} from "axios";
-import { BackendTokenRefreshResponse, BackendUser } from "@/app/types/backend-response/auth-response";
 // These two values should be a bit less than actual token lifetimes
 const BACKEND_ACCESS_TOKEN_LIFETIME = 45 * 60; // 45 minutes
 const BACKEND_REFRESH_TOKEN_LIFETIME = 6 * 24 * 60 * 60; // 6 days
-
+import { GoogleLoginApiV1AuthGooglePostData, TokenRefreshRequest, TokenRefreshApiV1AuthTokenRefreshPostData, TokenResponse, UserResponse , GoogleLoginRequest, TokenRefreshResponse, TokenRefreshApiV1AuthTokenRefreshPostError} from "@/src/api-client/auth-service";
 const getCurrentEpochTime = ():number =>  Math.floor(new Date().getTime() / 1000);
 
 
-interface BackendAuthResponse {
-  access: string;
-  refresh: string;
-  user: {
-    id: number;
-    email: string;
-    name: string;
-    picture: string;
-    emailVerified:string
-  };
-}
+
 
 declare module "next-auth/jwt" {
   interface JWT {
     access_token?: string;
     refresh_token?: string;
     ref?: number;
-    user?: BackendAuthResponse["user"]
+    user?: UserResponse
     error?: string;
   }
 }
@@ -36,7 +25,7 @@ declare module "next-auth" {
   interface Session {
     access_token?: string;
     error?: string;
-    user: BackendAuthResponse["user"];
+    user: UserResponse&DefaultSession["user"]
   }
 }
 const authConfig:NextAuthConfig = {
@@ -65,13 +54,17 @@ const authConfig:NextAuthConfig = {
         return false
       }
         try {
-          const response = await axios.post<BackendAuthResponse>(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google/`,
-
-            {
+          const responseData:GoogleLoginApiV1AuthGooglePostData = {
+            body:<GoogleLoginRequest>{
               token: account.id_token,
               access_token: account.access_token,
             },
+            url:"/api/v1/auth/google/"
+          } as const
+          const response = await axios.post<TokenResponse>(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}${responseData.url}`,
+
+            responseData?.body,
             {
               headers: {
                 "Content-Type": "application/json",
@@ -97,7 +90,7 @@ const authConfig:NextAuthConfig = {
     async jwt({ token, account }) {
       // Initial sign in
       if (account && (account as any).backend) {
-        const backend = (account as any).backend as BackendAuthResponse
+        const backend = (account as any).backend as TokenResponse
         token.access_token = backend.access
         token.refresh_token = backend.refresh
         token.user = backend.user
@@ -108,20 +101,25 @@ const authConfig:NextAuthConfig = {
       // Token refresh
       if (token.ref && getCurrentEpochTime()>token.ref) {
         try {
-          const response = await axios.post<BackendTokenRefreshResponse>(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/token/refresh/`,
-            {
+          const requestData:TokenRefreshApiV1AuthTokenRefreshPostData = {
+            body:<TokenRefreshRequest>{
               refresh: token.refresh_token,
             },
+            url:"/api/v1/auth/token/refresh"
+          } as const
+          const response = await axios.post<TokenRefreshResponse>(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}${requestData?.url}`,
+            requestData?.body,
+            
             {
               headers: {
                 "Content-Type": "application/json",
               },
             }
           );
-
-          if (response?.data?.access) {
-            token.access_token = response.data.access
+          const data = await response?.data?.access
+          if (data) {
+            token.access_token = data
             token.ref = getCurrentEpochTime() + BACKEND_ACCESS_TOKEN_LIFETIME;
           } else {
             console.log(response, "/////////");
