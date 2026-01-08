@@ -103,27 +103,27 @@ export type ContentGenerationRequest = {
     /**
      * Ctalink
      */
-    ctaLink?: string;
+    ctaLink: string|null
     /**
      * Language
      */
-    language?: string;
+    language: string;
     /**
      * Ctatype
      */
-    ctaType: string;
+    ctaType: string
     /**
      * Tone
      */
-    tone?: string | null;
+    tone: string 
     /**
      * Audience
      */
-    audience?: string | null;
+    audience: string 
     /**
      * Content Goal
      */
-    content_goal?: string | null;
+    content_goal: string 
     /**
      * Version
      */
@@ -131,7 +131,7 @@ export type ContentGenerationRequest = {
     /**
      * Platforms
      */
-    platforms?: Array<string> | null;
+    platforms: Array<string> 
     /**
      * Job Type
      */
