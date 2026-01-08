@@ -20,7 +20,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner"
-import { ContentSummarySchema } from "@/src/api-client"
+import { ContentSummarySchema } from "@/src/api-client/content-service"
 import { platformOptions } from "./generate-blog-form"
 interface PostCardProps {
   post: ContentSummarySchema

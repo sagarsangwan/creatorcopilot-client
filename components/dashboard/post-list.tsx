@@ -1,7 +1,7 @@
 "use client"
 
 import { PostCard } from "./post-card"
-import { ContentSummarySchema } from "@/src/api-client"
+import { ContentSummarySchema } from "@/src/api-client/content-service"
 interface PostListProps {
   posts: ContentSummarySchema[]
   onDelete?: (id: string) => void

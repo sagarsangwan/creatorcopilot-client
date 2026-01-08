@@ -187,7 +187,7 @@ export type ContentSummarySchema = {
     /**
      * Jobs
      */
-    jobs?: Array<JobResponseSchema>;
+    jobs: Array<JobResponseSchema>;
 };
 
 /**

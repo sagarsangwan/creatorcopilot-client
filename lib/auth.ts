@@ -105,7 +105,7 @@ const authConfig:NextAuthConfig = {
             body:<TokenRefreshRequest>{
               refresh: token.refresh_token,
             },
-            url:"/api/v1/auth/token/refresh"
+            url:"/api/v1/auth/token/refresh/"
           } as const
           const response = await axios.post<TokenRefreshResponse>(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}${requestData?.url}`,

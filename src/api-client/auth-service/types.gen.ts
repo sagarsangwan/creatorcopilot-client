@@ -140,7 +140,7 @@ export type TokenRefreshApiV1AuthTokenRefreshPostData = {
     body: TokenRefreshRequest;
     path?: never;
     query?: never;
-    url: '/api/v1/auth/token/refresh';
+    url: '/api/v1/auth/token/refresh/';
 };
 
 export type TokenRefreshApiV1AuthTokenRefreshPostErrors = {
