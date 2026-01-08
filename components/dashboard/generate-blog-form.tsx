@@ -15,7 +15,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { ContentGenerationRequest } from "@/src/api-client"
-import { title } from "process"
+
+import { Session } from "@auth/core/types"
 
 
 const toneMapping = [
@@ -61,8 +62,9 @@ const ctaOptions = [
   { value: "download", label: "Download" },
 ]
 
-export function GenerateBlogForm() {
+export function GenerateBlogForm({token}:{token:string}) {
   const router = useRouter()
+  const [loading, setLoading]=useState<boolean>(false)
    const [formData, setFormData] = useState<ContentGenerationRequest>({
     title:
       "Tired of a Messy Downloads Folder? I Built a Python Script to Fix It Forever",
@@ -128,7 +130,7 @@ organize_junk(target)`,
     version: 1,
   });
   const[showCta, setShowCta]=useState<boolean>(false)
-  const updateField = (field: keyof ContentGenerationRequest, value: any) => {
+  const updateField = (field: keyof ContentGenerationRequest, value: string) => {
   setFormData((prev) => {
     if (field === "platforms") {
       const currentPlatforms = prev.platforms || [];
@@ -145,30 +147,47 @@ organize_junk(target)`,
     return platform.id
   })
  
-  // const currentTone = toneMapping.find((t) => formData?.tone >= t.min && formData?.tone <= t.max)
-
-  // const togglePersona = (id: string) => {
-  //   setSelectedaudience((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]))
-  // }
-
-  // const togglePlatform = (platform: Platform) => {
-  //   setSelectedPlatforms((prev) => (prev.includes(platform) ? prev.filter((p) => p !== platform) : [...prev, platform]))
-  // }
 
   const estimatedTokens = 850 // Mock calculation
-  const canGenerate = formData.title && formData.content_goal && formData.platforms.length > 0
+  const canGenerate = formData.title && formData.platforms.length > 0 && token
   
-  const handleGenerate = () => {
-    if (!canGenerate) return
+  
 
-    toast.success("Content generation started!", {
+  const handleGenerate = async () => {
+    if (!canGenerate) return
+    setLoading(true);
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const res = await fetch(`${backendUrl}/posts/`, {
+        method: "POST",
+        body: JSON.stringify(formData),
+      headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.log(errorData);
+        toast.error(errorData.message || "Backend failed to sign upload");
+        return;
+      }
+      const data = await res.json();
+       toast.success("Content generation started!", {
       description: "Your content is being generated. This may take a few minutes.",
     })
+      if (data.content_id) {
+        router.push(`/history/${data.content_id}`);
+      }
 
-    setTimeout(() => {
-      router.push("/history")
-    }, 1000)
-  }
+      console.log(data.content_id);
+    } catch (e) {
+      console.error("Generation Error:", e);
+      toast.error(e instanceof Error ? e.message : "A network error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -383,7 +402,7 @@ organize_junk(target)`,
                     id="cta-url"
                     type="url"
                     placeholder="https://example.com"
-                    value={formData?.ctaLink}
+                    value={formData?.ctaLink||""}
                     onChange={(e) => updateField("ctaLink",e.target.value)}
                   />
                 </div>
@@ -404,7 +423,7 @@ organize_junk(target)`,
                   disabled={!canGenerate || mockUsage.tokensRemaining < estimatedTokens}
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
-                  Generate Content
+                  {!loading ? "Generate Blog" : "Uploading Details to the Ai "}
                 </Button>
               </div>
             </TooltipTrigger>
@@ -434,8 +453,13 @@ organize_junk(target)`,
                 <h3 className="text-lg font-bold">{formData.title}</h3>
               </div>
             )}
+             {formData.content && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-2">Content</p>
+                <h3 className="text-lg font-bold">{formData.content}</h3>
+              </div>
+            )}
 
-            {/* Selected Platforms */}
 
               <div>
                 <p className="text-xs text-muted-foreground mb-2">Platforms</p>

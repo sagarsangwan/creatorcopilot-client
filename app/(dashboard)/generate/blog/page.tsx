@@ -1,8 +1,10 @@
 import { GenerateBlogForm } from "@/components/dashboard/generate-blog-form";
+import { auth } from "@/lib/auth";
 
 
 
-export default function GenerateBlogPage() {
+export default async function GenerateBlogPage() {
+  const session = await auth()
   return (
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
@@ -11,7 +13,8 @@ export default function GenerateBlogPage() {
             Transform your blog post into platform-optimized social content
           </p>
         </div>
-        <GenerateBlogForm/>
+        {session?.access_token && <GenerateBlogForm token={session?.access_token}/>}
+        
       </div>
   )
 }
