@@ -5,14 +5,6 @@ export type ClientOptions = {
 };
 
 /**
- * ContentDetailResponse
- */
-export type ContentDetailResponse = {
-    content: ContentDetailSchema;
-    job?: JobDetailSchema | null;
-};
-
-/**
  * ContentDetailSchema
  */
 export type ContentDetailSchema = {
@@ -39,11 +31,7 @@ export type ContentDetailSchema = {
     /**
      * Platforms
      */
-    platforms?: Array<string> | null;
-    /**
-     * Jobs
-     */
-    jobs?: Array<JobResponseSchema>;
+    platforms: Array<string>;
     /**
      * Content
      */
@@ -51,11 +39,11 @@ export type ContentDetailSchema = {
     /**
      * Ctalink
      */
-    ctaLink: string;
+    ctaLink?: string | null;
     /**
      * Ctatype
      */
-    ctaType: string;
+    ctaType?: string | null;
     /**
      * Language
      */
@@ -63,15 +51,27 @@ export type ContentDetailSchema = {
     /**
      * Tone
      */
-    tone: string | null;
+    tone: string;
     /**
      * Audience
      */
-    audience: string | null;
+    audience: string;
     /**
      * Keywords
      */
-    keywords?: Array<string> | null;
+    keywords?: Array<string>;
+    /**
+     * Assets
+     */
+    assets?: Array<GeneratedAssetResponse> | null;
+    /**
+     * Visuals
+     */
+    visuals?: Array<VisualAssetResponse> | null;
+    /**
+     * Jobs
+     */
+    jobs: Array<JobResponseSchema>;
 };
 
 /**
@@ -89,7 +89,7 @@ export type ContentGenerateResponse = {
     /**
      * Status
      */
-    status: string;
+    status?: string;
 };
 
 /**
@@ -102,40 +102,42 @@ export type ContentGenerationRequest = {
     title: string;
     /**
      * Content
+     *
+     * The source blog or text content
      */
     content: string;
     /**
      * Ctalink
      */
-    ctaLink?: string;
+    ctaLink?: string | null;
     /**
      * Language
      */
-    language: string;
+    language?: string;
     /**
      * Ctatype
      */
-    ctaType?: string;
+    ctaType?: string | null;
     /**
      * Tone
      */
-    tone: string | null;
+    tone?: string | null;
     /**
      * Audience
      */
-    audience: string | null;
+    audience?: string | null;
     /**
      * Content Goal
      */
-    content_goal: string | null;
+    content_goal?: string | null;
     /**
      * Version
      */
-    version: number;
+    version?: number;
     /**
      * Platforms
      */
-    platforms: Array<string> | null;
+    platforms?: Array<string>;
     /**
      * Job Type
      */
@@ -158,6 +160,8 @@ export type ContentListResponse = {
 
 /**
  * ContentSummarySchema
+ *
+ * Summarized view for lists, excludes heavy 'content' and 'assets' fields
  */
 export type ContentSummarySchema = {
     /**
@@ -183,11 +187,65 @@ export type ContentSummarySchema = {
     /**
      * Platforms
      */
-    platforms: Array<string>;
+    platforms?: Array<string>;
     /**
      * Jobs
      */
-    jobs: Array<JobResponseSchema>;
+    jobs?: Array<JobResponseSchema>;
+};
+
+/**
+ * GeneratedAssetResponse
+ */
+export type GeneratedAssetResponse = {
+    /**
+     * Platform
+     *
+     * The social platform (e.g., linkedin, twitter)
+     */
+    platform: string;
+    /**
+     * Version
+     */
+    version?: number;
+    /**
+     * Text
+     */
+    text?: string | null;
+    /**
+     * Meta Data
+     */
+    meta_data?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Is Active
+     */
+    is_active?: boolean;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Content Post Id
+     */
+    content_post_id: string;
+    /**
+     * Job Id
+     */
+    job_id: string;
+    /**
+     * Previous Version Id
+     */
+    previous_version_id?: string | null;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
 };
 
 /**
@@ -201,46 +259,14 @@ export type HttpValidationError = {
 };
 
 /**
- * JobDetailSchema
- */
-export type JobDetailSchema = {
-    /**
-     * Id
-     */
-    id: string;
-    /**
-     * Job Type
-     */
-    job_type: string;
-    /**
-     * Retries
-     */
-    retries: number;
-    /**
-     * Status
-     */
-    status: string;
-    /**
-     * Percentage
-     */
-    percentage: number;
-    /**
-     * Error
-     */
-    error?: string | null;
-    /**
-     * Created At
-     */
-    created_at: string;
-    /**
-     * Updated At
-     */
-    updated_at: string;
-};
-
-/**
  * JobResponseSchema
  */
+export type UsageMetadataSchema = {
+    prompt_tokens: number;
+    candidates_tokens: number;
+    total_tokens: number;
+    "cached_tokens":number
+};
 export type JobResponseSchema = {
     /**
      * Id
@@ -266,6 +292,8 @@ export type JobResponseSchema = {
      * Error
      */
     error: string | null;
+    ai_provider: string | null;
+    usage_metadata: UsageMetadataSchema | null;
     /**
      * Created At
      */
@@ -292,6 +320,66 @@ export type ValidationError = {
      * Error Type
      */
     type: string;
+};
+
+/**
+ * VisualAssetResponse
+ */
+export type VisualAssetResponse = {
+    /**
+     * Slide Index
+     *
+     * The order of the slide/visual
+     */
+    slide_index: number;
+    /**
+     * Headline
+     */
+    headline?: string | null;
+    /**
+     * Subtext
+     */
+    subtext?: string | null;
+    /**
+     * Meta Data
+     *
+     * Metadata for image prompts or layout settings
+     */
+    meta_data?: {
+        [key: string]: unknown;
+    } | null;
+    /**
+     * Version
+     */
+    version?: number;
+    /**
+     * Is Active
+     */
+    is_active?: boolean;
+    /**
+     * Platform
+     */
+    platform?: string;
+    /**
+     * Id
+     */
+    id: string;
+    /**
+     * Content Post Id
+     */
+    content_post_id: string;
+    /**
+     * Job Id
+     */
+    job_id: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
 };
 
 export type JobStatusApiV1ContentJobStatusIdGetData = {
@@ -325,15 +413,15 @@ export type JobStatusApiV1ContentJobStatusIdGetResponses = {
 export type GetAllPostsApiV1ContentPostsGetData = {
     body?: never;
     path?: never;
-    query: {
+    query?: {
         /**
          * Limit
          */
-        limit: number ;
+        limit?: number | null;
         /**
          * Offset
          */
-        offset: number;
+        offset?: number;
     };
     url: '/api/v1/content/posts';
 };
@@ -423,7 +511,7 @@ export type GetPostDetailsApiV1ContentPostsContentIdGetData = {
          */
         job_type: string;
     };
-    url: '/api/v1/content/posts/{content_id}';
+    url: '/api/v1/content/posts/{content_id}/';
 };
 
 export type GetPostDetailsApiV1ContentPostsContentIdGetErrors = {
@@ -439,10 +527,55 @@ export type GetPostDetailsApiV1ContentPostsContentIdGetResponses = {
     /**
      * Successful Response
      */
-    200: ContentDetailResponse;
+    200: ContentDetailSchema;
 };
 
 export type GetPostDetailsApiV1ContentPostsContentIdGetResponse = GetPostDetailsApiV1ContentPostsContentIdGetResponses[keyof GetPostDetailsApiV1ContentPostsContentIdGetResponses];
+
+
+
+
+
+export type RetryAiGenerationApiV1ContentJobJobIdPutData = {
+    body?: never;
+    path: {
+        /**
+         * Job Id
+         */
+        job_id: string;
+    };
+    query?: {
+        /**
+         * Job Type
+         */
+        job_type?: string | null;
+    };
+    url: '/api/v1/content/job/{job_id}/';
+};
+
+export type RetryAiGenerationApiV1ContentJobJobIdPutErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+export type JobRetryResponse = {
+    /**
+     * Message
+     */
+    message: string;
+};
+
+export type RetryAiGenerationApiV1ContentJobJobIdPutError = RetryAiGenerationApiV1ContentJobJobIdPutErrors[keyof RetryAiGenerationApiV1ContentJobJobIdPutErrors];
+
+export type RetryAiGenerationApiV1ContentJobJobIdPutResponses = {
+    /**
+     * Successful Response
+     */
+    200: JobRetryResponse;
+};
+
+export type RetryAiGenerationApiV1ContentJobJobIdPutResponse = RetryAiGenerationApiV1ContentJobJobIdPutResponses[keyof RetryAiGenerationApiV1ContentJobJobIdPutResponses];
 
 export type IndexGetData = {
     body?: never;

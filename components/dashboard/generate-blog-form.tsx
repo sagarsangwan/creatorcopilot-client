@@ -158,7 +158,7 @@ organize_junk(target)`,
     try {
       const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
       const requestData:PostsApiV1ContentPostsPostData={
-        url:"/api/v1/content/posts",
+        url:"/api/v1/content/posts/",
         body:formData
       }
       const res = await fetch(`${backendUrl}${requestData.url}`, {

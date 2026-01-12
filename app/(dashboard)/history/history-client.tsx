@@ -14,7 +14,6 @@ import { fetchPosts } from '@/lib/actions/api-posts'
 function HistoryClient({session}:{session:Session}) {
   const [posts, setPosts] = useState<ContentSummarySchema[]>([])
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const handleDelete = (id: string) => {
     return
   }
@@ -26,7 +25,6 @@ function HistoryClient({session}:{session:Session}) {
         
         try {
           setLoading(true);
-          // Use the shared function
           const data = await fetchPosts(session.access_token, { limit: 3, offset: 0 });
           setPosts(data.posts);
         } catch (err) {
@@ -42,14 +40,7 @@ function HistoryClient({session}:{session:Session}) {
   if (loading ) {
     return (<div>loading...</div>)
   }
-  if (error) {
-    return (
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">History</h1>
-        <p className="text-muted-foreground mt-1">{error}</p>
-      </div>
-    );
-  }
+ 
 
   return (
       <div className="space-y-6">
